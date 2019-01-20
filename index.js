@@ -1,3 +1,4 @@
+const { Games } = require('@openhud/api');
 const { represent, position, Positions } = require('@openhud/helpers');
 const { texasHoldem, omahaHoldem } = require('hutchison');
 
@@ -31,11 +32,11 @@ const generateTip = (game, seats) => {
         }
         const myPlayerName = mySeat.playerName;
 
-        switch (game) {
-            case 'nlh':
+        switch (game.type) {
+            case Games.texasHoldem:
                 {
                     const myHandRep = represent({ hand: myHand });
-                    const { points, percentile } = texasHoldem({ hand: myHand });
+                    const { points } = texasHoldem({ hand: myHand });
                     const thresholds = texasHoldemThresholds.get(myPosition);
                     if (points >= thresholds.strong) {
                         tip.players[myPlayerName] = `${myHandRep} should open / raise previous open in ${myPosition} position.`;
@@ -46,7 +47,7 @@ const generateTip = (game, seats) => {
                     }
                 }
                 break;
-            case 'plo':
+            case Games.omahaHoldem:
                 {
                     const { points, percentile } = omahaHoldem({ hand: myHand });
                     tip.players[myPlayerName] = `${myHand.join('')} is worth ${points} points (${(percentile * 100).toFixed(1)}%).`;
@@ -116,7 +117,15 @@ app.post('/', (request, response) => {
 const metadata = {
     title: 'Hutchison Point System',
     description: 'Hutchison Point System (http://www.erhutchison.com/)',
-    games: ['nlh', 'plo'],
+    games: [{
+        type: Games.texasHoldem,
+        bet: '*',
+        format: '*'
+    }, {
+        type: Games.omahaHoldem,
+        bet: '*',
+        format: '*'
+    }],
     author: {
         name: "Danny Leshem",
         email: "dleshem@gmail.com"
