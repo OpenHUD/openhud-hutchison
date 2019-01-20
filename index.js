@@ -127,8 +127,8 @@ const metadata = {
         format: '*'
     }],
     author: {
-        name: "Danny Leshem",
-        email: "dleshem@gmail.com"
+        name: 'Danny Leshem',
+        email: 'dleshem@gmail.com'
     }
 };
 
