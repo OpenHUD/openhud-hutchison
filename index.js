@@ -33,7 +33,7 @@ const generateTip = (game, seats) => {
         const myPlayerName = mySeat.playerName;
 
         switch (game.type) {
-            case Games.texasHoldem:
+            case Games.TexasHoldem:
                 {
                     const myHandRep = represent({ hand: myHand });
                     const { points } = texasHoldem({ hand: myHand });
@@ -47,7 +47,7 @@ const generateTip = (game, seats) => {
                     }
                 }
                 break;
-            case Games.omahaHoldem:
+            case Games.OmahaHoldem:
                 {
                     const { points, percentile } = omahaHoldem({ hand: myHand });
                     tip.players[myPlayerName] = `${myHand.join('')} is worth ${points} points (${(percentile * 100).toFixed(1)}%).`;
@@ -118,11 +118,11 @@ const metadata = {
     title: 'Hutchison Point System',
     description: 'Hutchison Point System (http://www.erhutchison.com/)',
     games: [{
-        type: Games.texasHoldem,
+        type: Games.TexasHoldem,
         bet: '*',
         format: '*'
     }, {
-        type: Games.omahaHoldem,
+        type: Games.OmahaHoldem,
         bet: '*',
         format: '*'
     }],
