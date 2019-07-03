@@ -71,7 +71,7 @@ const functions = require('firebase-functions');
 
 const app = express()
 app.use(cors({
-    origin: true,
+    origin: '*',
     maxAge: 86400
 }));
 app.use(bodyParser.json());
