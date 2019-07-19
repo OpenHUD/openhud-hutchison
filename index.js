@@ -11,50 +11,52 @@ const texasHoldemThresholds = new Map([
 ]);
 
 
-const generateTip = (game, seats) => {
+const generateTip = (game, seats, community) => {
     const tip = { players: {} };
 
-    const players = seats.length;
-    const mySeatId = seats.findIndex(seat => seat.isMe);
-    const btnSeatId = seats.findIndex(seat => seat.isButton);
+    if (community.length === 0) {
+        const players = seats.length;
+        const mySeatId = seats.findIndex(seat => seat.isMe);
+        const btnSeatId = seats.findIndex(seat => seat.isButton);
 
-    if (mySeatId !== -1) {
-        const index = (mySeatId - (btnSeatId + 1) + players) % players;
-        const myPosition = position({ players, index });
+        if (mySeatId !== -1) {
+            const index = (mySeatId - (btnSeatId + 1) + players) % players;
+            const myPosition = position({ players, index });
 
-        const mySeat = seats[mySeatId];
-        const myHand = mySeat.cards;
-        if (myHand.length === 0) {
-            throw {
-                type: 'https://www.openhud.io/errors/invalid-data',
-                detail: 'Hero cards are missing'
-            };
-        }
-        const myPlayerName = mySeat.playerName;
+            const mySeat = seats[mySeatId];
+            const myHand = mySeat.cards;
+            if (myHand.length === 0) {
+                throw {
+                    type: 'https://www.openhud.io/errors/invalid-data',
+                    detail: 'Hero cards are missing'
+                };
+            }
+            const myPlayerName = mySeat.playerName;
 
-        switch (game.type) {
-            case Games.TexasHoldem:
-                {
-                    const myHandRep = represent({ hand: myHand });
-                    const { points } = texasHoldem({ hand: myHand });
-                    const thresholds = texasHoldemThresholds.get(myPosition);
-                    if (points >= thresholds.strong) {
-                        tip.players[myPlayerName] = `${myHandRep} should open / raise previous open in ${myPosition} position.`;
-                    } else if (points >= thresholds.playable) {
-                        tip.players[myPlayerName] = `${myHandRep} should open / call previous open in ${myPosition} position.`;
-                    } else {
-                        tip.players[myPlayerName] = `${myHandRep} should always fold in ${myPosition} position.`;
+            switch (game.type) {
+                case Games.TexasHoldem:
+                    {
+                        const myHandRep = represent({ hand: myHand });
+                        const { points } = texasHoldem({ hand: myHand });
+                        const thresholds = texasHoldemThresholds.get(myPosition);
+                        if (points >= thresholds.strong) {
+                            tip.players[myPlayerName] = `${myHandRep} should open / raise previous open in ${myPosition} position.`;
+                        } else if (points >= thresholds.playable) {
+                            tip.players[myPlayerName] = `${myHandRep} should open / call previous open in ${myPosition} position.`;
+                        } else {
+                            tip.players[myPlayerName] = `${myHandRep} should always fold in ${myPosition} position.`;
+                        }
                     }
-                }
-                break;
-            case Games.OmahaHoldem:
-                {
-                    const { points, percentile } = omahaHoldem({ hand: myHand });
-                    tip.players[myPlayerName] = `${myHand.join('')} is worth ${points} points (${(percentile * 100).toFixed(1)}%).`;
-                }
-                break;
-            default:
-                break;
+                    break;
+                case Games.OmahaHoldem:
+                    {
+                        const { points, percentile } = omahaHoldem({ hand: myHand });
+                        tip.players[myPlayerName] = `${myHand.join('')} is worth ${points} points (${(percentile * 100).toFixed(1)}%).`;
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -103,9 +105,9 @@ const translateException = e => {
 
 app.post('/', (request, response) => {
     try {
-        const { game, seats } = request.body;
+        const { game, seats, community } = request.body;
 
-        const tip = generateTip(game, seats);
+        const tip = generateTip(game, seats, community);
 
         response.status(200).send(tip);
     } catch (e) {
