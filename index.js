@@ -50,8 +50,9 @@ const generateTip = (game, seats, community) => {
                     break;
                 case Games.OmahaHoldem:
                     {
+                        const myHandRep = represent({ hand: myHand });
                         const { points, percentile } = omahaHoldem({ hand: myHand });
-                        tip.players[myPlayerName] = `${myHand.join('')} is worth ${points} points (${(percentile * 100).toFixed(1)}%).`;
+                        tip.players[myPlayerName] = `${myHandRep} is worth ${points} points (${(percentile * 100).toFixed(1)}%).`;
                     }
                     break;
                 default:
