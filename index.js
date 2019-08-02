@@ -52,8 +52,8 @@ const generateTip = (game, seats, community) => {
                     {
                         const myHandRep = represent({ hand: myHand });
                         const { ev, percentile } = omahaHoldem6({ hand: myHand });
-                        const { percentile2 } = omahaHoldem({ hand: myHand });
-                        tip.players[myPlayerName] = `${myHandRep} has ${(ev * 100).toFixed(1)}% EV 6-handed (ranks ${(percentile * 100).toFixed(1)}%, or ${(percentile2 * 100).toFixed(1)}% by original formula).`;
+                        const original = omahaHoldem({ hand: myHand });
+                        tip.players[myPlayerName] = `${myHandRep} has ${(ev * 100).toFixed(1)}% EV 6-handed (ranks ${(percentile * 100).toFixed(1)}%, or ${(original.percentile * 100).toFixed(1)}% by original formula).`;
                     }
                     break;
                 default:
