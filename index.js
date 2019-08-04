@@ -1,6 +1,6 @@
 const { Games } = require('@openhud/api');
 const { represent, position, Positions } = require('@openhud/helpers');
-const { texasHoldem, omahaHoldem, omahaHoldem6 } = require('hutchison');
+const { texasHoldem, omahaHoldem } = require('hutchison');
 
 
 // Based on https://www.advancedpokertraining.com/poker/blog/the-importance-of-texas-holdem-starting-hands/
@@ -51,9 +51,13 @@ const generateTip = (game, seats, community) => {
                 case Games.OmahaHoldem:
                     {
                         const myHandRep = represent({ hand: myHand });
-                        const { ev, percentile } = omahaHoldem6({ hand: myHand });
-                        const original = omahaHoldem({ hand: myHand });
-                        tip.players[myPlayerName] = `${myHandRep} has ${(ev * 100).toFixed(1)}% EV 6-handed (ranks ${(percentile * 100).toFixed(1)}%, or ${(original.percentile * 100).toFixed(1)}% by original formula).`;
+
+                        const lines = [`Players     EV     Rank - ${myHandRep}`];
+                        for (let players = 2; players <= 6; ++players) {
+                            const { ev, percentile } = omahaHoldem({ hand: myHand, players });
+                            lines.push(`    ${players}    ${(ev * 100).toFixed(1)}%    ${(percentile * 100).toFixed(1)}%`);
+                        }
+                        tip.players[myPlayerName] = lines.join('\n');
                     }
                     break;
                 default:

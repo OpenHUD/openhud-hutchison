@@ -9,6 +9,6 @@
       "firebase-functions":"^2.0.5",
       "@openhud/api": "^1.0.0",
       "@openhud/helpers": "^1.0.5",
-      "hutchison": "^2.1.1"
+      "hutchison": "^3.0.0"
     }
 }
