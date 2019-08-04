@@ -57,7 +57,7 @@ const generateTip = (game, seats, community) => {
                             const { ev, percentile } = omahaHoldem({ hand: myHand, players });
                             lines.push(`    ${players}    ${(ev * 100).toFixed(1)}%    ${(percentile * 100).toFixed(1)}%`);
                         }
-                        tip.players[myPlayerName] = lines.join('\n');
+                        tip.players[myPlayerName] = lines.join('<br>');
                     }
                     break;
                 default:
