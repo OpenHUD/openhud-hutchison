@@ -10,6 +10,10 @@ const texasHoldemThresholds = new Map([
     [Positions.Late, { playable: 25, strong: 29 }]
 ]);
 
+const humanizeRelativeEV = (players, ev) => {
+    const relativeEv = ev * players * 100 - 100;
+    return relativeEv > 0 ? `+${relativeEv.toFixed(1)}%` : `${relativeEv.toFixed(1)}%`;
+};
 
 const generateTip = (game, seats, community) => {
     const tip = { players: {} };
@@ -52,10 +56,10 @@ const generateTip = (game, seats, community) => {
                     {
                         const myHandRep = represent({ hand: myHand });
 
-                        const lines = [`Players     EV     Rank - ${myHandRep}`];
+                        const lines = [`Players Relative-EV Rank - ${myHandRep}`];
                         for (let players = 2; players <= 6; ++players) {
                             const { ev, percentile } = omahaHoldem({ hand: myHand, players });
-                            lines.push(`    ${players}    ${(ev * 100).toFixed(1)}%    ${(percentile * 100).toFixed(1)}%`);
+                            lines.push(`${players} ${humanizeRelativeEV(players, ev)} ${(percentile * 100).toFixed(1)}%`);
                         }
                         tip.players[myPlayerName] = lines.join('<br>');
                     }
