@@ -56,12 +56,19 @@ const generateTip = (game, seats, community) => {
                     {
                         const myHandRep = represent({ hand: myHand });
 
-                        const lines = [`Players Relative-EV Rank - ${myHandRep}`];
+                        let html = '<table>';
+                        html += '<thead>';
+                        html += `<tr><th colspan="3">${myHandRep}</th></tr>`;
+                        html += '<tr><th>Players</th><th>Relative EV</th><th>Rank</th></tr>';
+                        html += '</thead>';
+                        html += '<tbody>';
                         for (let players = 2; players <= 6; ++players) {
                             const { ev, percentile } = omahaHoldem({ hand: myHand, players });
-                            lines.push(`${players} ${humanizeRelativeEV(players, ev)} ${(percentile * 100).toFixed(1)}%`);
+                            html += `<tr><td>${players}</td><td>${humanizeRelativeEV(players, ev)}</td><td>${(percentile * 100).toFixed(1)}%</td></tr>`;
                         }
-                        tip.players[myPlayerName] = lines.join('<br>');
+                        html += '</tbody>';
+                        html += '</table>';
+                        tip.players[myPlayerName] = html;
                     }
                     break;
                 default:
