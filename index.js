@@ -15,6 +15,9 @@ const humanizeRelativeEV = (players, ev) => {
     return relativeEv > 0 ? `+${relativeEv.toFixed(1)}%` : `${relativeEv.toFixed(1)}%`;
 };
 
+const tableStyle = 'style="border-collapse: collapse"';
+const cellStyle = 'style="border: 1px solid #ddd; padding: 2px"';
+
 const generateTip = (game, seats, community) => {
     const tip = { players: {} };
 
@@ -56,15 +59,15 @@ const generateTip = (game, seats, community) => {
                     {
                         const myHandRep = represent({ hand: myHand });
 
-                        let html = '<table>';
+                        let html = `<table ${tableStyle}>`;
                         html += '<thead>';
-                        html += `<tr><th colspan="3">${myHandRep}</th></tr>`;
-                        html += '<tr><th>Players</th><th>Relative EV</th><th>Rank</th></tr>';
+                        html += `<tr><th colspan="3" ${cellStyle}>${myHandRep}</th></tr>`;
+                        html += `<tr><th ${cellStyle}>Players</th><th ${cellStyle}>Relative EV</th><th ${cellStyle}>Rank</th></tr>`;
                         html += '</thead>';
                         html += '<tbody>';
                         for (let players = 2; players <= 6; ++players) {
                             const { ev, percentile } = omahaHoldem({ hand: myHand, players });
-                            html += `<tr><td>${players}</td><td>${humanizeRelativeEV(players, ev)}</td><td>${(percentile * 100).toFixed(1)}%</td></tr>`;
+                            html += `<tr><td ${cellStyle}>${players}</td><td ${cellStyle}>${humanizeRelativeEV(players, ev)}</td><td ${cellStyle}>${(percentile * 100).toFixed(1)}%</td></tr>`;
                         }
                         html += '</tbody>';
                         html += '</table>';
